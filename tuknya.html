@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Image Overlay with Marker and Popup</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+    <div id="map" style="height: 600px;"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const map = L.map('map').setView([0, 0], 2);
+
+            // Define the bounds of your image
+            const bounds = [[-512, -512], [512, 512]];
+
+            // Add the image overlay to the map (sample image with square and circle)
+            const imageOverlay = L.imageOverlay("/Users/user/Desktop/testimg.png", bounds).addTo(map);
+
+            // Set the maximum bounds to prevent users from dragging the image outside of its boundaries
+            map.setMaxBounds(bounds);
+
+            // Add a visible bounding box for the square with a popup in the middle of the right side
+            const squareBounds = [[-100, -300], [-80, -40]];
+            const squareBox = L.rectangle(squareBounds, { color: 'red', weight: 2 }).addTo(map);
+
+            // Define popup content for the square
+            const squarePopupContent = "This is the square information.";
+
+            // Bind popup to the square bounding box
+            squareBox.bindPopup(squarePopupContent);
+
+            // Add a visible bounding box for the circle with a popup in the middle of the left side
+            const circleBounds = [[-25, -50], [25, 50]];
+            const circleBox = L.rectangle(circleBounds, { color: 'blue', weight: 2 }).addTo(map);
+
+            // Define popup content for the circle
+            const circlePopupContent = "This is the circle information.";
+
+            // Bind popup to the circle bounding box
+            circleBox.bindPopup(circlePopupContent);
+
+            // Event listener for click on the square bounding box
+            squareBox.on('click', function (event) {
+                const popup = event.target.getPopup();
+                popup.setLatLng(event.latlng).openOn(map);
+            });
+
+            // Event listener for click on the circle bounding box
+            circleBox.on('click', function (event) {
+                const popup = event.target.getPopup();
+                popup.setLatLng(event.latlng).openOn(map);
+            });
+
+            // Close popup when clicking outside the bounding boxes
+            map.on('click', function () {
+                map.closePopup();
+            });
+
+            // Move the bounding boxes to the front to ensure they receive click events
+            squareBox.bringToFront();
+            circleBox.bringToFront();
+        });
+    </script>
+
+</body>
+</html>
